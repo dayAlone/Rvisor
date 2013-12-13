@@ -1,0 +1,28 @@
+<div id="orders">
+	<h3>Заказы для {{ client }}</h3>
+	<p> Выберите необходимый</p>
+	<table>
+		<thead>
+			<tr>
+				<th width="3%"></th>
+				<th>Номер заказа</th>
+				<th>Дата</th>
+				<th>Комментарий</th>
+			</tr>
+		</thead>
+		<tbody>
+			{% for item in data %}
+                <tr data-id="{{ item.id }}">
+                   <td>
+                   	<input type="radio" name="order">
+                   </td>
+                   <td>{{ item.id }}</td>
+                   <td>{{ item.date }}</td>
+                   <td>{{ item.comment }}</td>
+                </tr>
+            {% endfor %}
+		</tbody>
+	</table>
+	<a class="btn cancel">Отмена</a>
+	<a class="btn go">Продолжить</a>
+</div>

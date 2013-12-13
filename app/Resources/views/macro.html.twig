@@ -1,0 +1,12 @@
+{% import "::macro.html.twig" as macro %}
+{% macro list(items) %}
+	<ul>
+    {% for item in items %}
+        <li data-code="{{ item.code }}"><a data-code="{{ item.code }}" href="#"> {{ item.name }}</a>
+        {% if item.child is defined %}
+                {{ _self.list(item.child) }}
+        {% endif %}
+    {% endfor %}
+    </li>
+    </ul>
+{% endmacro %}

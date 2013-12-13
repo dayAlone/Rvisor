@@ -1,0 +1,74 @@
+{% extends '::main.html.twig' %}
+
+{% block title %} {{ parent() }} | История заказов{% endblock %}
+
+{% block bodyclass %}dashboard{% endblock %}
+
+{% block body %}
+<div id="dashboard">
+    <div class="scroll con">
+        <div class="container" id="title">
+            <div class="col_12">
+                <div class="content">
+                    <h1>История заказов</h1>
+                </div>
+            </div>
+        </div>
+        <div class="container first-step" id="content">
+            <div class="col_1">
+                <br />
+                
+            </div>
+            <div class="col_10">
+                <table id="history">
+                    <thead>
+                    <tr>
+                        <th style="width: 60px">Номер</th>
+                        <th style="width: 400px">Клиент</th>
+                        <th style="width: 200px">Комментарий</th>
+                        <th style="width: 120px">Дата создания</th>
+                        <th style="width: 20px"></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in list %}
+                            <tr data-id="{{ item.id }}">
+                                <td>{{ item.id }}</td>
+                                <td><strong>{{ item.client }}</strong><br /><small>{{ item.address }}</small></td>
+                                <td>{{ item.comment }}</td>
+                                <td>{{ item.date }}</td>
+                                <td class="next"><a class="icon-chevron-right next" href="/history/{{ item.id }}/"></a></td>
+                            </tr>
+                        {% endfor %}
+
+                    </tbody>
+                </table>
+            </div>
+            <div class="col_1">
+                <br />
+                
+            </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="/static/scripts/app.js"></script>
+    <script>
+        $(document).ready(function(){
+           
+           $('#history tr').on('dblclick',function(x){
+                x.preventDefault();
+                window.location.href = $(this).find('a').attr('href')
+            })
+            $('#history tr').on('doubletap',function(x){
+                x.preventDefault();
+                window.location.href = $(this).find('a').attr('href')
+            })
+        })
+    </script>
+{% endblock %}

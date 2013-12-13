@@ -1,0 +1,26 @@
+<div id="tree-detail">
+	<h3>Наличие на складах</h3>
+	<p>{{ name }} </p>
+	<table width="100%">
+		<thead>
+			<tr>
+				<th width="3%">Код</th>
+				<th>Склад</th>
+				<th>Колличество товара</th>
+			</tr>
+		</thead>
+		<tbody>
+			{% for item in items %}
+	            <tr>
+	            	<td>
+	            		{{ item.id }}
+	            	</td>
+	                <td width="50%">{{ item.name }}</td>
+	                <td>{{item.count}}</td>
+	            </tr>
+	        {% endfor %}
+	        
+		</tbody>
+	</table>
+	<a href="#" style="float: right" class="btn cancel">Продолжить</a>
+</div>

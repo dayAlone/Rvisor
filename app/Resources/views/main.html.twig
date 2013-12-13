@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="user-scalable=no, initial-scale = 1, minimum-scale = 1, maximum-scale = 1, width=device-width" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <title>{% block title %}Rvisor{% endblock %}</title>
+        {% block stylesheets %}
+            <link rel="stylesheet" href="/static/stylesheets/app.css">
+        {% endblock %}
+    </head>
+    <body class="{% block bodyclass %}{% endblock %}">
+    <div id="header">
+        <ul class="con">
+            <li class="dashboard active">
+                <a href="#"><i class="icon-user "></i> Торговый представитель</a>
+            </li>
+            <li class="dashboard innactive">
+                <a href="#"><i class="icon-group "></i> Супервайзер</a>
+            </li>
+            <a href="/" id="logo"><img src="/static/images/logo.png"></a>
+        </ul>
+    </div>
+    <div id="stream">
+        <div class="con">
+            <a class="tile innactive" href="#" id="recent">
+                <span class="vector icon-camera"></span>
+                <span class="title"><strong>Фотоотчет</strong></span>
+
+            </a>
+            <a class="tile innactive" href="#" id="mobile">
+                <span class="vector icon-bar-chart"></span>
+                <span class="title"><strong>План</strong></span>
+
+            </a>
+
+            <a class="tile innactive" id="comment">
+                <span class="vector icon-book"></span>
+                <span class="title"><strong>Отчеты</strong> </span>
+
+            </a>
+            <a class="tile {% if url == 'order_history' %}active{% endif %}" href="{{ url('history') }}" id="elements">
+                <span class="vector icon-file-text"></span>
+                <span class="title"><strong>Заказы</strong> </span>
+
+            </a>
+            <a class="tile {% if url == 'new_order' %}active{% endif %}" href="/" id="article">
+                <span class="vector icon-shopping-cart"></span>
+                <span class="title"><strong>Новый</strong> заказ</span>
+
+            </a>
+
+
+
+            <div class="tile" id="hello">
+                <h2><span>Здравствуйте,<br /></span> {{ name }}</h2>
+                <ul class="nav">
+                    <li class="hidden">
+                        <a href="#home" class="icon-cogs"></a>
+                    </li>
+                    <li>
+                        <a href="/logout" class="icon-signout"></a>
+                    </li>
+                    <li>
+
+                    </li>
+                </ul>
+            </div>
+
+        </div>
+    </div>
+    
+        {% block body %}{% endblock %}
+        {% block javascripts %}
+            <script src="/static/scripts/library.js"></script>
+        {% endblock %}
+        <div id="footer">Rvisor © 2013. Система управления современной торговлей.</div>
+    </body>
+</html>

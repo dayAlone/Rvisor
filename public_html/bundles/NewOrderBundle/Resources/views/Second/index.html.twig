@@ -1,0 +1,182 @@
+{% extends '::main.html.twig' %}
+
+{% block title %} {{ parent() }} | Новый заказ | Шаг 2{% endblock %}
+
+{% block bodyclass %}dashboard{% endblock %}
+
+{% block body %}
+<div id="dashboard">
+    <div class="scroll con">
+        <div class="container" id="title">
+            <div class="col_3">
+                <div class="content">
+                    <h1>Новый заказ</h1>
+                </div>
+            </div>
+            <div class="col_7 omega">
+                <div class="content">
+                    <div class="container" id="description">
+                        <div class="col_3"><span class="number">1.</span> <span class="text">Выбор <br />торговой точки</span></div>
+                        <div class="col_3 active"><span class="number">2.</span> <span class="text">Выбор<br /> ассортимента</span></div>
+                        <div class="col_3"><span class="number">3.</span> <span class="text">Свойства<br /> заказа</span></div>
+                        <div class="col_3"><span class="number">4.</span> <span class="text">Подтверждение<br /> и отправка заказа</span></div>
+                    </div>
+                    <span class="progress-bar stripes">
+                        <span class="green" style="width: 50%"></span>
+                    </span>
+                </div>
+            </div>
+        </div>
+        <div class="container first-step" id="content">
+            <div class="col_1">
+                <br />
+                <a class="icon-chevron-left nav prev" href="{{ url('index') }}"></a>
+            </div>
+            <div class="col_10">
+                
+                <h2>Шаг 2. Воспользуйтесь поиском для выбора необходимого товарного ассортимента</h2>
+                <form id="search" class="content">
+                    <p>
+                        <i class="icon-search"></i>
+                        <select data-placeholder=" " style="width:350px;" multiple="" tabindex="3">
+                            <option value=""></option>
+                        </select>
+                    </p>
+                </form>
+                <table>
+                    <thead>
+                    <tr>
+                        <th style="width: 340px">Товарная позиция</th>
+                        <th>Цена за единицу</th>
+                        <th>Единица</th>
+                        <th>Колличество</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                        
+                        {% for item in items %}
+                            <tr data-id = "{{ item.id }}">
+                                <td>{{ item.name }}</td>
+                                <td>{{ item.price }}</td>
+                                <td>{{ item.type }}</td>
+                                <td class="action"><a href="#" class="minus">–</a><input type="text" value="{{item.count}}"><a href="#" class="plus">+</a><a class="del">&#215;</a></td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            <div class="col_1">
+                <br />
+                <a class="icon-chevron-right nav next disable" href="{{url('step3')}}"></a>
+            </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="/static/scripts/app.js"></script>
+    <script src="/static/scripts/chosen.js"></script>
+    <script src="/static/scripts/chosen.ajaxaddition.js"></script>
+    <script>
+        $(document).ready(function(){
+            
+            var timer;
+            
+            $('#search select').ajaxChosen({
+                dataType: 'json',
+                type: 'POST',
+                url:'/search',
+                data:  {'keyboard':'cat'}, //Or can be [{'name':'keyboard', 'value':'cat'}]. chose your favorite, it handles both.
+                success: function(data, textStatus, jqXHR){ 
+                    console.log(data);
+                }
+            },{
+                processItems: function(data){ return data.results; },
+                generateUrl: function(q){ 
+                    return '/step2/search/'+q; 
+                    $('#search input[type="text"]').val(q);
+                },
+                loadingImg: '/static/images/loading.gif'
+            });
+            var objLength = function(obj){    
+                var key,len=0;
+                for(key in obj){
+                    len += Number( obj.hasOwnProperty(key) );
+                }
+                return len;
+            };
+            $('a.nav.next').click(function(e){
+                if($(this).hasClass('disable')) {
+                    e.preventDefault();
+                }
+                else window.location.href = $(this).attr('href')
+            })
+            $('td.action a').live('click',function(){
+                var order = $.cookie('order');
+                var id = $(this).parents('tr').data('id');
+                var input = $(this).parents('td.action').find('input');
+                var val = parseInt(input.val());
+                
+                if(order.step2[id].substring) order.step2[id] = JSON.parse(order.step2[id]);
+                
+                if($(this).hasClass('minus')){
+                    if(val==1&&confirm('Удалить из заказа?')) {
+                        delete order.step2[id];
+                        $(this).parents('tr').remove();
+                    }
+                    order.step2[id].count = val-1;
+                    input.val(val-1);
+                }
+                else if($(this).hasClass('plus')) {
+                    order.step2[id].count = val+1;
+                    input.val(val+1);
+                }
+                else if (confirm('Удалить из заказа?')) {
+                        delete order.step2[id];
+                        $(this).parents('tr').remove();
+                    
+                }
+                $.cookie('order', order, { expires: 2, path: '/' });
+                return false;
+            });
+            function add_item(id) {
+                $.ajax({
+                  url: '{{url('step2_info')}}/'+id,
+                  success: function(data){
+                    var order = $.cookie('order');
+                    data.count = 1;
+                    if(!order.step2) {
+                        order.step2 = {};
+                        order.step2.item1 = jQuery.parseJSON(data);
+                    }
+                    else {
+                        var id = 'item'+objLength(order.step2);
+                        order.step2[id] = jQuery.parseJSON(data);
+                    }
+                    $('.nav.next').removeClass('disable');
+                    $.cookie('order', order, { expires: 2, path: '/' });
+                    data = JSON.parse(data);
+                    if(!id) id = 'item1';
+                    tr = '<tr data-id="'+id+'"><td>'+data.name+'</td><td>'+data.price+'</td><td>'+data.type+'</td><td class="action"><a href="#" class="minus">–</a><input type="text" value="1"><a href="#" class="plus">+</a><a class="del">&#215;</a></td></tr>';
+                    $('table').append(tr);
+                  }
+                });
+            }
+             $('#search select').on('change', function(evt, params) {
+                add_item($(this).val());    
+                $('.search-choice').remove();
+                $('#search select option').removeAttr('selected');
+              });
+            var order = $.cookie('order');
+
+            if(order){
+                if(order.step2&&order.step2!='') $('.nav.next').removeClass('disable')
+            }
+            
+        })
+    </script>
+{% endblock %}

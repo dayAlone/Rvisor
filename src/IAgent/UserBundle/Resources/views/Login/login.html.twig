@@ -1,0 +1,23 @@
+{% extends '::base.html.twig' %}
+
+{% block title %} {{ parent() }} | Добро пожаловать!{% endblock %}
+
+{% block bodyclass %}welcome{% endblock %}
+
+{% block body %}
+    <div id="welcome">
+        <div id="password" class="animated fadeInDown">
+            <form action="{{ path('login_check') }}" method="POST">
+                <div class="input username"><input type="text" name="_username" value="{{ last_username }}" placeholder="Имя пользователя" /></div>
+                <div class="input password"><input type="password" name="_password" placeholder="Пароль" /></div>
+                <button>Войти</button>
+            </form>
+        </div>
+    </div>
+
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="/static/scripts/login.js"></script>
+{% endblock %}

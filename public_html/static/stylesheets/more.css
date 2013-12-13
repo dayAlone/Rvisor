@@ -1,0 +1,213 @@
+#tree-block .right {
+	text-align: right;
+}
+
+#tree-block h3 {
+	color: #90a2a3 !important;
+	font-weight: normal;
+	height: 0px;
+	margin-top: 10px;
+	float: left;
+	width: 100%;
+	margin-bottom: 35px;
+	line-height: 20px;
+	text-align: center;
+	font-size: 21px;
+}
+a.btn {
+	text-transform: uppercase;
+	
+}
+#simplemodal-overlay {
+	background-image: url(/static/images/loading2.gif);
+	background-position: center center;
+	background-repeat: no-repeat !important;
+	max-height: 100%;
+}
+#loading #simplemodal-data {
+	font-size: 25px;
+	color: #fff;
+	margin-left: -200px;
+	margin-top: -90px;
+	text-align: center;
+	font-family: 'Helvetica Neue';
+	font-weight: 200;
+	min-width: 600px;
+}
+a.warehouse {
+	border: 1px solid #859a9b;
+	height: 20px;
+	display: inline-block;
+	width: 20px;
+	text-align: center;
+	line-height: 20px;
+	padding-right: 1px;
+	opacity: .5;
+	border-radius: 25px;
+	color: #859a9b;
+}
+a.warehouse:hover {
+	opacity: 1;
+}
+#orders {
+	display: none;
+	float: left;
+	width: 100%;
+}
+.simplemodal-data #orders {
+	display: block;
+}
+#info-modal {
+	width: 500px !important;
+	color: #bbb;
+	background-color: #dee9e9;
+	padding: 12px;
+	
+	padding-top: 5px;
+}
+#info-modal p {
+	text-align: center;
+	font-size: 12px;
+	position: relative;
+	top: -13px;
+	margin-bottom: 0;
+}
+#total {
+	float: right;
+	font-size: 14px;
+	margin-top: 10px;
+	margin-right: 10px;
+}
+.btn.clear {
+	float: right;
+	padding: 0 20px;
+	margin-right: 10px;
+	background-color: #aaa;
+}
+.btn.clear:hover {
+	background-color: #999
+}
+#info-modal .btn {
+	float: left;
+	margin-top: 15px;
+}
+#info-modal .btn.go {
+	float: right;
+	display: none;
+}
+#info-modal h3 {
+color: #90a2a3 !important;
+font-weight: normal;
+height: 0px;
+margin-top: 10px;
+float: left;
+width: 100%;
+margin-bottom: 35px;
+line-height: 12px;
+text-align: center;
+font-size: 21px;}
+
+tr.title td, tr.title:hover td {
+	text-align: center;
+	
+	font-size: 11px;
+	letter-spacing: 1px;
+	text-transform: uppercase;
+	background: #85aeb0;
+	color: #fff;
+	height: 20px;
+	
+}
+.btn.back {
+	display: none;
+}
+#tree-block.simplemodal-data #tree.loading {
+	overflow: hidden !important;
+}
+#tree.loading .fade {
+	display: block;
+}
+#tree-block.step2 .btn.cancel {
+	display: none;
+}
+.icheckbox,.iradio {
+	width: 16px;
+	height: 16px;
+	background-color: #fff;
+	border: solid 1px #c4cbcc;
+	box-shadow: inset 0px 0px 2px #c4cbcc;
+	display: inline-block;
+	position: relative;
+	top: 2px;
+}
+.icheckbox.checked,.iradio.checked {
+	background: #fff url(../images/check.png) center center no-repeat;
+}
+#tree-block .btn.add { display: none; float: right;}
+#tree-block.step2 .btn.add { display: block;}
+#tree-block.step2 .btn.back { display: block;}
+#tree .fade {
+	position: absolute;
+	top: 0;
+	left: 0;
+	display: none;
+	opacity: .7;
+	background: #000 url(../images/loading2.gif) center center no-repeat;
+	width: 100%;
+	height: 100%;
+}
+a.modal-trigger {
+	margin-left: 10px;
+	margin-bottom: 20px;
+	width: auto;
+	padding: 0 20px;
+}
+#tree-block.simplemodal-data #tree, #tree-detail {
+	display: block;
+	float: left;
+	width: 100%;
+	position: relative;
+	max-height: 540px;
+	overflow: scroll !important;
+	height: 100%;
+}
+#tree-block .actions {
+	border-bottom: 1px solid #ddd;
+	float: left;
+	width: 100%;
+	padding-top: 10px;
+	height: 52px;
+	background:#dee9e9;
+}
+
+#search.list {
+	width: 97%;
+}
+#search.list .icon-search{
+	top: 19px;
+}
+#find {
+	margin-top: 11px;
+	box-shadow: none;
+	border: 1px solid #bbb;
+	background: -webkit-linear-gradient(rgba(255,255,255,0.2), white);
+	background: -moz-linear-gradient(rgba(255,255,255,0), white);
+	height: 42px;
+	margin-bottom: 0px;
+	color: #888;
+	border-radius: 2px;
+	font-size: 12px;
+	-webkit-box-shadow: 0px 1px 0px white, rgba(0, 0, 0, .35) 0px 4px 5px -5px inset;
+	-moz-box-shadow: 0px 1px 0px white, rgba(0, 0, 0, .35) 0px 4px 5px -5px inset;
+	box-shadow: 0px 1px 0px white, rgba(0, 0, 0, .35) 0px 4px 5px -5px inset;
+	display: block;
+	width: 100%;
+	float: left;
+	font: normal 12px HelveticaNeue, Helvetica, Arial;
+	-moz-box-sizing: border-box;
+	-webkit-box-sizing: border-box;
+	-ms-box-sizing: border-box;
+	box-sizing: border-box;
+	padding-left: 10px;
+	padding-right: 10px;
+}

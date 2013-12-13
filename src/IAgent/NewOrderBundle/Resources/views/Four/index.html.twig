@@ -1,0 +1,392 @@
+{% extends '::main.html.twig' %}
+
+{% block title %} {{ parent() }} | Новый заказ | Шаг 2{% endblock %}
+
+{% block bodyclass %}dashboard{% endblock %}
+
+{% block body %}
+<div id="dashboard">
+    <div class="scroll con">
+        <div class="container" id="title">
+            <div class="col_3">
+                <div class="content">
+                    <h1>Новый заказ</h1>
+                </div>
+            </div>
+            <div class="col_7 omega">
+                <div class="content">
+                    <div class="container" id="description">
+                        <div class="col_3"><span class="number">1.</span> <span class="text">Выбор <br />торговой точки</span></div>
+                        <div class="col_3"><span class="number">2.</span> <span class="text">Выбор<br /> ассортимента</span></div>
+                        <div class="col_3"><span class="number">3.</span> <span class="text">Свойства<br /> заказа</span></div>
+                        <div class="col_3 active"><span class="number">4.</span> <span class="text">Подтверждение<br /> и отправка заказа</span></div>
+                    </div>
+                    <span class="progress-bar stripes">
+                        <span class="green" style="width: 100%"></span>
+                    </span>
+                </div>
+            </div>
+        </div>
+        <div class="container first-step" id="content">
+            <div class="col_1">
+                <br />
+                <a class="icon-chevron-left nav prev" href="{{ url('step3') }}"></a>
+            </div>
+            <div class="col_10">
+                
+                <h2>Шаг 4. Пожалуйста проверьте заказ перед отправкой</h2>
+                <table>
+                    <colgroup>
+                        <col width="150">
+                        <col width="300">
+                         <col width="150">
+                        <col width="300">
+                    </colgroup>
+                    <tbody>
+                        <tr>
+                            <td>Название компании</td>
+                            <td colspan="3">{{company.name}}</td>
+                        <tr>
+                            <td>Адрес</td>
+                            <td>{{company.address}}</td>
+                            <td>Долг</td>
+                            <td>{% if company.debt < 0 %}{{ company.debt*-1 }}{% else %}0{% endif %}</td>
+                        </tr>
+
+                        <tr>
+                            <td>Доставка</td>
+                            <td>{% if info.time is defined %}{{info.time}}{% endif %}</td>
+                            <td>Оплата</td>
+                            <td>
+                                {% if info.money == 1 %}
+                                    Наличными водителю
+                                {% elseif info.money == 2 %}
+                                    Предоплата
+                                {% elseif info.money == 3 %}
+                                    Безналичный расчет
+                                {% endif %}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Тип отгрузки</td>
+                            <td>
+                                {% if info.dev == 1 %}
+                                    Белая
+                                {% elseif info.dev == 2 %}
+                                    Черная
+                                {% endif %}
+                            </td>
+                            <td>Комментарий</td>
+                            <td>{{ info.comment }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <br />
+                <table>
+                    <thead>
+                    <tr>
+                        <th style="width: 340px">Товарная позиция</th>
+                        <th>Цена за единицу</th>
+                        <th>Единица</th>
+                        <th>Количество</th>
+                        <th width="12%">Итого   </th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                        {% set total = 0 %}
+                        {% set currency = 0 %}
+                        {% for item in items %}
+                            <tr data-id = "{{ item.id }}">
+                                <td>{{ item.name }}</td>
+                                <td>{{ item.price }} {{ item.currency }}</td>
+                                <td>{{ item.type }}</td>
+                                <td>{{item.count}}</td>
+                                <td>{{ item.price*item.count}} {{ item.currency }}</td>
+                            </tr>
+                            {% set total = total + item.price*item.count %}
+                            {% set currency = item.currency %}
+                        {% endfor %}
+                    </tbody>
+                </table>
+                <div id="total" style="width: 20%; text-align: right; margin-right: 15px ">
+                    {{total}} {{currency}}
+                </div>
+                <br /><br />
+                <a href="#" id="finish">Отправить заказ</a>
+                <br /><br /><br /><br />
+            </div>
+            <div class="col_1">
+                <br />
+                
+            </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+<div id="notifications" class="margin"></div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="/static/scripts/app.js"></script>
+    <script src="/static/scripts/chosen.js"></script>
+    <script src="/static/scripts/chosen.ajaxaddition.js"></script>
+    <script>
+        (function ($) {
+    $.notification = function (settings) {
+        var con, notification, hide, image, right, left, inner;
+        
+        settings = $.extend({
+            title: undefined,
+            content: undefined,
+            timeout: 0,
+            img: undefined,
+            border: true,
+            fill: false,
+            showTime: false,
+            click: undefined,
+            icon: undefined,
+            color: undefined,
+            error: false
+        }, settings);
+        
+        con = $("#notifications");
+        if (!con.length) {
+            con = $("<div>", { id: "notifications" }).appendTo($("#overlays"))
+        };
+        
+        notification = $("<div>");
+        notification.addClass("notification animated fadeInLeftMiddle fast");
+        
+        if(settings.error == true) {
+            notification.addClass("error");
+        }
+        
+        if( $("#notifications .notification").length > 0 ) {
+            notification.addClass("more");
+        } else {
+            con.addClass("animated flipInX").delay(1000).queue(function(){ 
+                con.removeClass("animated flipInX");
+                    con.clearQueue();
+            });
+        }
+        
+        hide = $("<div>", {
+            click: function () {
+                 
+                
+                if($(this).parent().is(':last-child')) {
+                    $(this).parent().remove();
+                    $('#notifications .notification:last-child').removeClass("more");
+                } else {
+                    $(this).parent().remove();
+                }
+            }
+        });
+        
+        hide.addClass("hide");
+
+        left = $("<div class='left'>");
+        right = $("<div class='right'>");
+        
+        if(settings.title != undefined) {
+            var htmlTitle = "<h2>" + settings.title + "</h2>";
+        } else {
+            var htmlTitle = "";
+        }
+        
+        if(settings.content != undefined) {
+            var htmlContent = settings.content;
+        } else {
+            var htmlContent = "";
+        }
+        
+        inner = $("<div>", { html: htmlTitle + htmlContent });
+        inner.addClass("inner");
+        
+        inner.appendTo(right);
+        
+        if (settings.img != undefined) {
+            image = $("<div>", {
+                style: "background-image: url('"+settings.img+"')"
+            });
+        
+            image.addClass("img");
+            image.appendTo(left);
+            
+            if(settings.border==false) {
+                image.addClass("border")
+            }
+            
+            if(settings.fill==true) {
+                image.addClass("fill");
+            }
+            
+        } else {
+            if (settings.icon != undefined) {
+                var iconType = settings.icon;
+            } else {
+                if(settings.error!=true) {
+                    var iconType = '"';
+                } else {
+                    var iconType = '!';
+                }
+            }   
+            icon = $('<div class="icon">').html(iconType);
+            
+            if (settings.color != undefined) {
+                icon.css("color", settings.color);
+            }
+            
+            icon.appendTo(left);
+        }
+
+        left.appendTo(notification);
+        right.appendTo(notification);
+        
+        hide.appendTo(notification);
+        
+        function timeSince(time){
+            var time_formats = [
+              [2, "One second", "1 second from now"], // 60*2
+              [60, "seconds", 1], // 60
+              [120, "One minute", "1 minute from now"], // 60*2
+              [3600, "minutes", 60], // 60*60, 60
+              [7200, "One hour", "1 hour from now"], // 60*60*2
+              [86400, "hours", 3600], // 60*60*24, 60*60
+              [172800, "One day", "tomorrow"], // 60*60*24*2
+              [604800, "days", 86400], // 60*60*24*7, 60*60*24
+              [1209600, "One week", "next week"], // 60*60*24*7*4*2
+              [2419200, "weeks", 604800], // 60*60*24*7*4, 60*60*24*7
+              [4838400, "One month", "next month"], // 60*60*24*7*4*2
+              [29030400, "months", 2419200], // 60*60*24*7*4*12, 60*60*24*7*4
+              [58060800, "One year", "next year"], // 60*60*24*7*4*12*2
+              [2903040000, "years", 29030400], // 60*60*24*7*4*12*100, 60*60*24*7*4*12
+              [5806080000, "One century", "next century"], // 60*60*24*7*4*12*100*2
+              [58060800000, "centuries", 2903040000] // 60*60*24*7*4*12*100*20, 60*60*24*7*4*12*100
+            ];
+            
+            var seconds = (new Date - time) / 1000;
+            var token = "ago", list_choice = 1;
+            if (seconds < 0) {
+                seconds = Math.abs(seconds);
+                token = "from now";
+                list_choice = 1;
+            }
+            var i = 0, format;
+            
+            while (format = time_formats[i++]) if (seconds < format[0]) {
+                if (typeof format[2] == "string")
+                    return format[list_choice];
+                else
+                    return Math.floor(seconds / format[2]) + " " + format[1];
+            }
+            return time;
+        };
+        
+        if(settings.showTime != false) {
+            var timestamp = Number(new Date());
+            
+            timeHTML = $("<div>", { html: "<strong>" + timeSince(timestamp) + "</strong> ago" });
+            timeHTML.addClass("time").attr("title", timestamp);
+            timeHTML.appendTo(right);
+            
+            setInterval(
+                function() {
+                    $(".time").each(function () {
+                        var timing = $(this).attr("title");
+                        $(this).html("<strong>" + timeSince(timing) + "</strong> ago");
+                    });
+                }, 4000)
+            
+        }
+
+        notification.hover(
+            function () {
+                hide.show();
+            }, 
+            function () {
+                hide.hide();
+            }
+        );
+        
+        notification.prependTo(con);
+        
+        notification.show();
+
+        if (settings.timeout) {
+            setTimeout(function () {
+                var prev = notification.prev();
+                if(prev.hasClass("more")) {
+                    if(prev.is(":first-child") || notification.is(":last-child")) {
+                        prev.removeClass("more");
+                    }
+                }
+                notification.remove();
+            }, settings.timeout)
+        }
+        
+        if (settings.click != undefined) {
+            notification.addClass("click");
+            notification.bind("click", function (event) {
+                var target = $(event.target);
+                if(!target.is(".hide") ) {
+                    settings.click.call(this)
+                }
+            })
+        }
+        return this
+    }
+})(jQuery);
+        $(document).ready(function(){
+            $('a.nav.next').click(function(e){
+                if($(this).hasClass('disable')) {
+                    e.preventDefault();
+                }
+                else {
+                    var order = $.cookie('order');
+                    order.step3 = {
+                        time : $('#datetimepicker1 input').val(),
+                        dev : $('input[name="dev"]:checked').val(),
+                        money : $('input[name="dev"]:checked').val(),
+                        comment : $('#comments').val()
+                    }
+                    
+                    $.cookie('order', order, { expires: 2, path: '/' });
+                    window.location.href = $(this).attr('href')
+                }
+                return false;
+            })
+            var order = $.cookie('order');
+
+                
+
+            $('#finish').click(function(e){
+                e.preventDefault();
+                
+                $.ajax({
+                    url: '{{url('finish')}}',
+                    success: function(data) {
+                        $.notification( 
+                            {
+                                title: "Зазказ "+data,
+                                content: "Ваш заказ успешно оформлен!",
+                                img: "/static/images/logo-sm.png",
+                                border: false,
+                            }
+                        );
+                        setTimeout(function(){
+                            window.location.href = '/';
+                        },3000)
+                    }
+                })
+            });
+            if(order){
+                if(order.step3&&order.step3!='') $('.nav.next').removeClass('disable')
+            }
+
+            $('#datetimepicker1 input').appendDtpicker({"locale": "ru","firstDayOfWeek": 1});
+        })
+    </script>
+{% endblock %}

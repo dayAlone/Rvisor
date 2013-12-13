@@ -1,0 +1,225 @@
+{% extends '::main.html.twig' %}
+
+{% block title %} {{ parent() }} | Новый заказ | Шаг 1{% endblock %}
+
+{% block bodyclass %}dashboard{% endblock %}
+
+{% block body %}
+<div id="dashboard">
+    <div class="scroll con">
+        <div class="container" id="title">
+            <div class="col_3">
+                <div class="content">
+                    <h1>Новый заказ</h1>
+                </div>
+            </div>
+            <div class="col_7 omega">
+                <div class="content">
+                    <div class="container" id="description">
+                        <div class="col_3 active"><span class="number">1.</span> <span class="text">Выбор <br />торговой точки</span></div>
+                        <div class="col_3"><span class="number">2.</span> <span class="text">Выбор<br /> ассортимента</span></div>
+                        <div class="col_3"><span class="number">3.</span> <span class="text">Свойства<br /> заказа</span></div>
+                        <div class="col_3"><span class="number">4.</span> <span class="text">Подтверждение<br /> и отправка заказа</span></div>
+                    </div>
+                    <span class="progress-bar stripes">
+                        <span class="green" style="width: 25%"></span>
+                    </span>
+                </div>
+            </div>
+        </div>
+        <div class="container first-step" id="content">
+            <div class="col_1">
+                <br />
+                <a class="icon-chevron-left nav prev disable" href="#"></a>
+            </div>
+            <div class="col_10">
+                
+                <h2>Шаг 1. Воспользуйтесь поиском для выбора необходимой торговой точки</h2>
+                <form id="search" class="content">
+                    <p>
+                        <i class="icon-search"></i>
+                        <input type="text" placeholder="быстрый поиск">
+                    </p>
+                </form>
+                <table>
+                    <thead>
+                    <tr>
+                        <th>Название торговой точки</th>
+                        <th style="width: 500px">Адрес</th>
+                        <th>Долг</th>
+                        <th>Макс. долг</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                        {% if prev is defined %}
+                        <tr  class="title">
+                            <td colspan="4">Предыдущие клиенты</td>
+                        </tr>
+                        {% for customer in prev %}
+                            <tr data-id="{{ customer.code }}" class="arch {% if customer.act == 1 %}active{% endif %}">
+                                <td>{{ customer.name }}</td>
+                                <td>{{ customer.address }}</td>
+                                <td>{% if customer.debt < 0 %}{{ customer.debt*-1 }}{% else %}0{% endif %}</td>
+                                <td>{{ customer.max_debd }}</td>
+                            </tr>
+                        {% endfor %}
+                        <tr class="title">
+                            <td colspan="4">Результаты поска</td>
+                        </tr>
+                        {% endif %}
+                        {% for customer in customers %}
+                            <tr data-id="{{ customer.code }}" class="{% if customer.act == 1 %}active{% endif %}">
+                                <td>{{ customer.name }}</td>
+                                <td>{{ customer.address }}</td>
+                                <td>{% if customer.debt < 0 %}{{ customer.debt*-1 }}{% else %}0{% endif %}</td>
+                                <td>{{ customer.max_debd }}</td>
+                            </tr>
+                        {% endfor %}
+
+                    </tbody>
+                </table>
+            </div>
+            <div class="col_1">
+                <br />
+                <a class="icon-chevron-right nav next disable" href="#"></a>
+            </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="/static/scripts/app.js"></script>
+    <script>
+        $(document).ready(function(){
+            $('#search input').focus();
+            var timer;
+            
+            $('#search input').keyup(function(){
+
+                var url = ""
+                if($(this).val()) url ='/search/'+$(this).val();
+                else '/';
+                clearTimeout(timer);
+                
+                timer = setTimeout(function(){
+                    $.ajax({
+                        url: url,
+                        success: function(data){
+                            $('#content table tbody').html($('#content table tbody',data).html());
+                        }
+                    });
+                },300);
+                
+            });
+            var order = $.cookie('order');
+            
+            if(order){
+                if(order.step1&&order.step1!='') $('.nav.next').removeClass('disable')
+            }
+            
+            $('#content.first-step tbody tr:not(.title)').live('click tap',function(){
+                order = $.cookie('order');
+                
+                if(!order) {
+                    order = {
+                        step1: $(this).data().id
+                    }
+                }
+                else {
+                    order.step1 = $(this).data().id
+                }
+                
+                $.cookie('order', order, { expires: 2, path: '/' });
+                
+                $('#content.first-step tbody tr').removeClass('active');
+                $(this).toggleClass('active');
+                if($('#content.first-step tbody tr.active').length>0) $('.nav.next').removeClass('disable')
+                
+            });
+            var show = 0;
+            function check(){
+                show=1;
+                var id = $('tr.active').data('id');
+                if($('tr.active').hasClass('arch')&&confirm('Создать новый заказ на основе предыдущего?')){
+                    $.modal("Загружаем информацию о заказах",{containerId:"loading",autoResize: true,onShow:function(){},overlayClose:true,closeClass: '.btn.cancel'});
+                    $.ajax({
+                        url: '/orders/'+id,
+                        success: function(data){
+                            $.modal.close();
+                            $.modal(data,{containerId:"info-modal",autoResize: true,onShow:function(){},overlayClose:true,closeClass: '.btn.cancel,.btn.add'});
+                            $('#orders  input[type="radio"]').iCheck();
+                    }});
+                    return false;
+                }
+                else return true;
+            }
+            $('#orders input[type="radio"]').live('ifChecked', function(event){
+                $('#orders .go').show();
+            });
+            
+            $('#orders input[type="radio"]').live('ifUnchecked', function(event){
+                if($('.iradio.checked').length==0) $('#orders .go').hide();
+            });
+            $('#orders tbody tr').live('click',function(){
+                $(this).find('input[type="radio"]').iCheck('check');
+            })
+            
+            $('#orders .btn.go').live('click',function(){
+                if($('#orders .checked').parents('tr').data('id')) {
+                    $.get("/step2/"+$('#orders .checked').parents('tr').data('id'),function(data){
+                       if(data) {
+                        id = $('#content.first-step table tr.active').data('id')
+                        order = $.cookie('order');
+                        data = JSON.parse(data);
+                        
+                        if(!order) order = {}
+                        order.step1 = id
+                        
+                        order.step2 = data;
+                        //console.log(order);
+                        $.cookie('order', order, { expires: 2, path: '/' });
+                        window.location.href="{{ url('step2') }}"
+                        //order = $.cookie('order');
+                        //console.log(order);
+                       }
+                    });
+                    
+                }
+            });
+
+
+            $('#content.first-step tbody tr:not(.title)').live('dblclick ',function(x){
+                if(show!=1&& check()){
+                    
+                    order = $.cookie('order');
+                    if(order.step1 != "") window.location.href = "{{ url('step2') }}";
+                }
+                x.preventDefault();
+            })
+            $('#content.first-step tbody tr:not(.title)').live('doubletap',function(x){
+                if(show!=1&& check()){
+                    
+                    order = $.cookie('order');
+                    if(order.step1 != "") window.location.href = "{{ url('step2') }}";
+                }
+                x.preventDefault();
+            })
+            $('.nav.next').click(function(x){
+                if(check()){
+                    
+                    if(!$(this).hasClass('disable')) {
+                        
+                        order = $.cookie('order');
+                        console.log(order);
+                        if(order.step1 != "") window.location.href = "{{ url('step2') }}"
+                    }
+                }
+                x.preventDefault();
+            });
+        })
+    </script>
+{% endblock %}

@@ -1,0 +1,157 @@
+{% extends '::main.html.twig' %}
+
+{% block title %} {{ parent() }} | Новый заказ | Шаг 2{% endblock %}
+
+{% block bodyclass %}dashboard{% endblock %}
+
+{% block body %}
+<div id="dashboard">
+    <div class="scroll con">
+        <div class="container" id="title">
+            <div class="col_3">
+                <div class="content">
+                    <h1>Новый заказ</h1>
+                </div>
+            </div>
+            <div class="col_7 omega">
+                <div class="content">
+                    <div class="container" id="description">
+                        <div class="col_3"><span class="number">1.</span> <span class="text">Выбор <br />торговой точки</span></div>
+                        <div class="col_3"><span class="number">2.</span> <span class="text">Выбор<br /> ассортимента</span></div>
+                        <div class="col_3"><span class="number">3.</span> <span class="text">Свойства<br /> заказа</span></div>
+                        <div class="col_3 active"><span class="number">4.</span> <span class="text">Подтверждение<br /> и отправка заказа</span></div>
+                    </div>
+                    <span class="progress-bar stripes">
+                        <span class="green" style="width: 100%"></span>
+                    </span>
+                </div>
+            </div>
+        </div>
+        <div class="container first-step" id="content">
+            <div class="col_1">
+                <br />
+                <a class="icon-chevron-left nav prev" href="{{ url('step3') }}"></a>
+            </div>
+            <div class="col_10">
+                
+                <h2>Шаг 4. Пожалуйста проверьте заказ перед отправкой</h2>
+                <table>
+                    <colgroup>
+                        <col width="150">
+                        <col width="300">
+                         <col width="150">
+                        <col width="300">
+                    </colgroup>
+                    <tbody>
+                        <tr>
+                            <td>Название компании</td>
+                            <td colspan="3">{{company.name}}</td>
+                        <tr>
+                            <td>Адрес</td>
+                            <td>{{company.address}}</td>
+                            <td>Долг</td>
+                            <td>{% if company.debt < 0 %}{{ company.debt*-1 }}{% else %}0{% endif %}</td>
+                        </tr>
+
+                        <tr>
+                            <td>Доставка</td>
+                            <td>{{info.time}}</td>
+                            <td>Оплата</td>
+                            <td>
+                                {% if info.money == 1 %}
+                                    Наличными водителю
+                                {% elseif info.money == 2 %}
+                                    Предоплата
+                                {% elseif info.money == 3 %}
+                                    Безналичный расчет
+                                {% endif %}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Тип отгрузки</td>
+                            <td>
+                                {% if info.dev == 1 %}
+                                    Белая
+                                {% elseif info.dev == 2 %}
+                                    Черная
+                                {% endif %}
+                            </td>
+                            <td>Комментарий</td>
+                            <td>{{ info.comment }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <br />
+                <table>
+                    <thead>
+                    <tr>
+                        <th style="width: 340px">Товарная позиция</th>
+                        <th>Цена за единицу</th>
+                        <th>Единица</th>
+                        <th>Колличество</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                        
+                        {% for item in items %}
+                            <tr data-id = "{{ item.id }}">
+                                <td>{{ item.name }}</td>
+                                <td>{{ item.price }}</td>
+                                <td>{{ item.type }}</td>
+                                <td>{{item.count}}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                <br /><br />
+                <a href="#" id="finish">Отправить заказ</a>
+                <br /><br /><br /><br />
+            </div>
+            <div class="col_1">
+                <br />
+                
+            </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="/static/scripts/app.js"></script>
+    <script src="/static/scripts/chosen.js"></script>
+    <script src="/static/scripts/chosen.ajaxaddition.js"></script>
+    <script>
+        $(document).ready(function(){
+            
+            
+            $('a.nav.next').click(function(e){
+                if($(this).hasClass('disable')) {
+                    e.preventDefault();
+                }
+                else {
+                    var order = $.cookie('order');
+                    order.step3 = {
+                        time : $('#datetimepicker1 input').val(),
+                        dev : $('input[name="dev"]:checked').val(),
+                        money : $('input[name="dev"]:checked').val(),
+                        comment : $('#comments').val()
+                    }
+                    
+                    $.cookie('order', order, { expires: 2, path: '/' });
+                    window.location.href = $(this).attr('href')
+                }
+                return false;
+            })
+            var order = $.cookie('order');
+
+            if(order){
+                if(order.step3&&order.step3!='') $('.nav.next').removeClass('disable')
+            }
+
+            $('#datetimepicker1 input').appendDtpicker({"locale": "ru","firstDayOfWeek": 1});
+        })
+    </script>
+{% endblock %}

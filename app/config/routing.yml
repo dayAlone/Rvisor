@@ -1,0 +1,7 @@
+new_order:
+    resource: "@NewOrderBundle/Controller"
+    type: annotation
+
+user_actions:
+    resource: "@UserBundle/Controller"
+    type: annotation
