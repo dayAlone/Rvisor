@@ -300,51 +300,55 @@ class DefaultController extends Controller
             return $this->render('NewOrderBundle:Second:index.html.twig',array('items'=>$items,'name'=>$user->getName(), 'cats'=> $cats, 'url' => 'new_order'));
         }
         else {
+            
             $f = $this->getDoctrine()->getRepository('NewOrderBundle:ProductGroup')->findOneByCode($query);
-            $code = $f->getCode();
-            $childrens = $this->getDoctrine()->getRepository('NewOrderBundle:ProductGroup')->findByParentGroupCode($f->getCode());
-            
-            $cats[$f->getCode()] = array(
-                        'name'=>preg_replace("/[^\w\d ]/ui", '',$f->getName()),
-                        'code'=>$f->getCode(),
-                        'child'=>$childrens
-                    );
-            global $child_list;
-            $child_list = array();
-            
-            array_walk($cats[$f->getCode()]['child'], array($this,'check'));
-            
-            if(count($child_list)==0) 
-                $child_list = array($query);$items_list = $this->getDoctrine()->getRepository('NewOrderBundle:Product')->findByProductGroupCode($child_list, array('name' => 'ASC'));
-                foreach ($items_list as $item) {
-                $types_raw = $this->getDoctrine()->getRepository('NewOrderBundle:ProductUnit')->findByProductCode($item->getCode());
-                $types = array();
-                $i=1;
-                $id = "item-".$this->tr($item->getCode());
+            if($f) {
+                $code = $f->getCode();
+                $childrens = $this->getDoctrine()->getRepository('NewOrderBundle:ProductGroup')->findByParentGroupCode($f->getCode());
                 
-                if($items[$id]) $check=1;
-                else $check=0;
+                $cats[$f->getCode()] = array(
+                            'name'=>preg_replace("/[^\w\d ]/ui", '',$f->getName()),
+                            'code'=>$f->getCode(),
+                            'child'=>$childrens
+                        );
+                global $child_list;
+                $child_list = array();
+                
+                array_walk($cats[$f->getCode()]['child'], array($this,'check'));
+                
+                if(count($child_list)==0) 
+                    $child_list = array($query);$items_list = $this->getDoctrine()->getRepository('NewOrderBundle:Product')->findByProductGroupCode($child_list, array('name' => 'ASC'));
+                    foreach ($items_list as $item) {
+                    $types_raw = $this->getDoctrine()->getRepository('NewOrderBundle:ProductUnit')->findByProductCode($item->getCode());
+                    $types = array();
+                    $i=1;
+                    $id = "item-".$this->tr($item->getCode());
+                    
+                    if($items[$id]) $check=1;
+                    else $check=0;
 
-                foreach ($types_raw as $type) {
-                    $types[$i] = array(
-                        'id' => $i,
-                        'code' => $type->getCode(),
-                        'name' => $type->getFullName(),
-                        'factor' => $type->getFactor()
+                    foreach ($types_raw as $type) {
+                        $types[$i] = array(
+                            'id' => $i,
+                            'code' => $type->getCode(),
+                            'name' => $type->getFullName(),
+                            'factor' => $type->getFactor()
+                        );
+                        $i--;
+                    }
+                    $tmp = array(
+                        'name' => $item->getName(),
+                        'code' => $item->getCode(),
+                        'price' => $this->getPrice($item->getCode()),
+                        'currency' => 'руб.',
+                        'current_type' => 0,
+                        'types' => (object)$types,
+                        'count'=>1,
                     );
-                    $i--;
-                }
-                $tmp = array(
-                    'name' => $item->getName(),
-                    'code' => $item->getCode(),
-                    'price' => $this->getPrice($item->getCode()),
-                    'currency' => 'руб.',
-                    'current_type' => 0,
-                    'types' => (object)$types,
-                    'count'=>1,
-                );
-                $data[] = array_merge($tmp, array('data'=>json_encode($tmp,JSON_UNESCAPED_UNICODE)), array('check'=>$check));
+                    $data[] = array_merge($tmp, array('data'=>json_encode($tmp,JSON_UNESCAPED_UNICODE)), array('check'=>$check));
+                }    
             }
+            
             
             return $this->render('NewOrderBundle:Second:info.html.twig', array('items'=>$data));
             
