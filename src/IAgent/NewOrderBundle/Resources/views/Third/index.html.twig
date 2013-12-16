@@ -57,8 +57,8 @@
                         <tr>
                             <td>Тип отгрузки</td>
                             <td class="radio">
-                                <input type="radio" {% if info.dev is defined %}{% if (info.dev == 1) or (info.dev is null) %}checked=""{% endif %}{% else %}checked=""{% endif %} name="dev" value=1 id="dev1"/><label for="dev1">Белая</label><br />
-                                <input type="radio" {% if info.dev is defined %}{% if info.dev == 2 %}checked=""{% endif %}{% endif %} name="dev" value=2 id="dev2"/><label for="dev2">Черная</label>
+                                <input type="radio" {% if info.dev is defined %}{% if (info.dev == 1) or (info.dev is null) %}checked=""{% endif %}{% else %}checked=""{% endif %} name="dev" value=1 id="dev1"/><label for="dev1">По счет-фактуре</label><br />
+                                <input type="radio" {% if info.dev is defined %}{% if info.dev == 2 %}checked=""{% endif %}{% endif %} name="dev" value=2 id="dev2"/><label for="dev2">Без счета-фактуры</label>
                                 
                             </td>
                         </tr>
