@@ -29,26 +29,98 @@
             		{% for key, item in stuff %}
 						
                 		<li>
-                			<input checked="checked" type="checkbox" name="stuff-{{ key }}" id="stuff-{{ key }}" value="{{ item.code }}">
+                			<input {% if(item.active==true) %}checked="checked"{% endif %} type="checkbox" name="stuff-{{ key }}" id="stuff-{{ key }}" value="{{ item.code }}">
                 			<label for="stuff-{{ key }}">{{ item.name }}</label>
                 		</li>
                 	{% endfor %}
             	</ul>
             </div>
             <div class="col_9">
-            	<br />
-            	<br />
-            	<br />
-            	<br />
+            	<div id="order-list">
+            		<div class="content">
+	            		{% if orders|length>0 %}
+	            		{% for key, order in orders %}
+						
+							<h2 class="container">
+								<div class="col_2">{{ key }}</div>
+								<div class="col_4 right">Заявок: {{ order.items|length }}</div>
+								<div class="col_6 right">На сумму: {{ order.total }} руб.</div>
+							</h2>
+							<ul>
+		                		{% for item in order.items %}
+		                		    <li>
+		                		    	<div class="col_8">{{ item.client }}</div>
+										<div class="col_3 right"><span>{{ item.price }} руб.</span></div>	
+										<div class="col_1 center"><a class="icon-chevron-right next" href="/manager/order/{{ item.id }}/"></a></div>
+		                		    </li>
+		                		{% endfor %}
+	                		</ul>
+	                	{% endfor %}
+	                	{% else %}
+	                		<br/><br/>
+							<h2 class="center">Заказов по данным параметрам не найдено</h2>
+							<br/>
+							<br/>
+	                	{% endif %}
+                	</div>
+            	</div>
             </div>
         </div>
     </div>
 </div>
 <style type="text/css">
+	#order-list {
+		width: 80%;
+		margin: 0 auto;
+	}
+	#order-list ul {
+
+		float: left;
+		list-style: none;
+		width: 100%;
+		margin-bottom: 35px;
+		margin-top: 0;
+		padding-left: 10px;
+	}
+	#order-list ul li {
+		float: left;
+		list-style: none;
+		width: 100%;
+		height: 45px;
+		line-height: 45px;
+		font-size: 15px;
+		background: #ebf5f4;
+		border-bottom: 1px solid #ced8d8;
+		border-left: 1px solid #faffff;
+	}
+	#order-list ul li:hover {
+		background: #fff !Important;
+	}
+	#order-list ul li .col_3 {
+		box-shadow: -1px 0 0 0 #faffff, inset 1px 0 0 0 #ced8d8, 1px 0 0 0 #ced8d8, inset -1px 0 0 0 #faffff;
+
+	}
+	#order-list ul li .col_3 span {
+		margin-right: 15px;
+	}
+	#order-list ul li:nth-child(2n) {
+		background: #e4ebec;
+	}
 	#stuff {
 		list-style: none;
 		padding: 0;
 		margin-left: 10px;
+	}
+	.center .next {
+		margin-right: 5px;
+		color: #638386;
+	}
+	.center {
+		text-align: center;
+	}
+	.right
+	{
+		text-align: right;
 	}
 	#stuff li {
 		float: left;
@@ -100,12 +172,19 @@
 	$(function(){
 	  $('#month').change(function(){
 	  	window.location.href = '/manager/'+$(this).val()+'/';
-	  })
+	  });
+	  var exclude = $.cookie('exclude');
 	  $('#stuff input').iCheck({
         cursor: true
-      })/*.on('ifToggled',function(){
-        $(this).parents('.half').find('label').toggleClass('active');
-      });*/
+      }).on('ifToggled',function(){
+      	exclude = "";
+      	$.each($('#stuff input:not(:checked)'), function(){
+      		exclude+=$(this).val()+" ";
+      	})
+      	
+        $.cookie('exclude',(exclude), { expires: 1, path: '/' });
+        $('#order-list').load(window.location.href+' #order-list .content');
+      });
 	})
 	</script>
 {% endblock %}
