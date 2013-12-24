@@ -44,6 +44,15 @@ class appProdUrlMatcher extends Symfony\Bundle\FrameworkBundle\Routing\Redirecta
                 return $this->mergeDefaults(array_replace($matches, array('_route' => 'iagent_manager_default_index')), array (  'month' => NULL,  '_controller' => 'IAgent\\ManagerBundle\\Controller\\DefaultController::indexAction',));
             }
 
+            // iagent_manager_default_order
+            if (0 === strpos($pathinfo, '/manager/order') && preg_match('#^/manager/order/(?P<order>[^/]++)/?$#s', $pathinfo, $matches)) {
+                if (substr($pathinfo, -1) !== '/') {
+                    return $this->redirect($pathinfo.'/', 'iagent_manager_default_order');
+                }
+
+                return $this->mergeDefaults(array_replace($matches, array('_route' => 'iagent_manager_default_order')), array (  'order' => NULL,  '_controller' => 'IAgent\\ManagerBundle\\Controller\\DefaultController::orderAction',));
+            }
+
         }
 
         // index

@@ -36,10 +36,11 @@ class DefaultController extends Controller
     	$o_i = $this->getDoctrine()->getRepository('NewOrderBundle:OrderItem')->findByOrder($o_r->getID());
     	$items = array();
     	$info = array(
-    			'client'  => $o_r->getCustomerCode()->getName(),
+    			'name'  => $o_r->getCustomerCode()->getName(),
     			'address' => $o_r->getCustomerCode()->getAddress(),
     			'debt'    => $o_r->getCustomerCode()->getCurrentDebt(),
     			'comment' => $o_r->getAgentComment(),
+    			'time'    => $o_r->getRequestedDeliveryTimestamp()->format('d.m.Y H:i'),
     			'total'   => 0
     		);
     	foreach ($o_i as $item) {
@@ -47,6 +48,7 @@ class DefaultController extends Controller
     		$items[] = array(
     				'id' => $item->getID(),
     				'name' => $item->getProductName(),
+    				'type' => $item->getProductUnitFullName(),
     				'factor' => $item->getProductUnitFactor(),
     				'quantity' => $item->getRequestedQuantity(),
     				'price' => $price
@@ -169,6 +171,21 @@ class DefaultController extends Controller
 			'months'        => $months,
 			'orders'		=> $orders,
 			'stuff'         => $stuff
+        );
+    }
+
+    /**
+     * @Route ("/manager/order/{order}/")
+     * @Template ("ManagerBundle:Order:index.html.twig")
+     */
+    public function orderAction($order=NULL) {
+    	$user = $this->get('security.context')->getToken()->getUser();
+    	$order = $this->getOrder($order);
+    	return array(
+			'name'          => $user->getName(),
+			'order'			=> $order,
+			'url'           => 'manager', 
+			'nav'           => $this->get_nav(), 
         );
     }
 }

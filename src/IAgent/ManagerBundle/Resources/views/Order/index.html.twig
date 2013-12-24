@@ -1,0 +1,97 @@
+{% extends '::main.html.twig' %}
+
+{% block title %} {{ parent() }} | Информация о заказе{% endblock %}
+
+{% block bodyclass %}dashboard{% endblock %}
+
+{% block body %}
+<div id="dashboard">
+    <div class="scroll con">
+        <div class="container" id="title">
+            <div class="col_12">
+                <div class="content">
+                    <h1>История заказов</h1>
+                </div>
+            </div>
+        </div>
+        <div class="container first-step" id="content">
+            <div class="col_1">
+                <br />
+                <a class="icon-chevron-left nav prev" href="/manager/"></a>
+            </div>
+            <div class="col_10">
+                <table id="history">
+                    <colgroup>
+                        <col width="150">
+                        <col width="300">
+                         <col width="150">
+                        <col width="300">
+                    </colgroup>
+                    <tbody>
+                        <tr>
+                            <td>Название компании</td>
+                            <td colspan="3">{{order.info.name}}</td>
+                        <tr>
+                            <td>Адрес</td>
+                            <td>{{order.info.address}}</td>
+                            <td>Долг</td>
+                            <td>{% if order.info.debt < 0 %}{{ order.info.debt*-1 }}{% else %}0{% endif %}</td>
+                        </tr>
+
+                        <tr>
+                            <td>Доставка</td>
+                            <td>{{order.info.time}}</td>
+                            <td>Комментарий</td>
+                            <td>{{ order.info.comment }}</td>
+                        </tr>
+                        <tr>
+                            <td>Общая сумма заказа</td>
+                            <td colspan="3">{{order.info.total}} руб.</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <br />
+                <table>
+                    <thead>
+                    <tr>
+                        <th style="width: 340px">Товарная позиция</th>
+                        <th>Цена за единицу</th>
+                        <th>Единица</th>
+                        <th>Колличество</th>
+                        <th>Сумма</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                        
+                        {% for item in order.items %}
+                            <tr>
+                                <td>{{ item.name }}</td>
+                                <td>{{ item.price }}</td>
+                                <td>{{ item.type }}</td>
+                                <td>{{ item.quantity }}</td>
+                                <td>{{ item.price*item.quantity*item.factor }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                <br /><br />
+                
+                <br /><br /><br /><br />
+            </div>
+            <div class="col_1">
+                <br />
+                
+            </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+<div id="notifications" class="margin"></div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="/static/scripts/app.js"></script>
+    
+{% endblock %}
