@@ -51,21 +51,21 @@
                     </tr>
                     </thead>
                     <tbody>
-                        {% if prev is defined %}
-                        <tr  class="title">
-                            <td colspan="4">Предыдущие клиенты</td>
-                        </tr>
-                        {% for customer in prev %}
-                            <tr data-id="{{ customer.code }}" class="arch {% if customer.act == 1 %}active{% endif %}">
-                                <td>{{ customer.name }}</td>
-                                <td>{{ customer.address }}</td>
-                                <td>{% if customer.debt < 0 %}{{ customer.debt*-1 }}{% else %}0{% endif %}</td>
-                                <td>{{ customer.max_debd }}</td>
+                        {% if prev|length > 0 %}
+                            <tr  class="title">
+                                <td colspan="4">Предыдущие клиенты</td>
                             </tr>
-                        {% endfor %}
-                        <tr class="title">
-                            <td colspan="4">Результаты поска</td>
-                        </tr>
+                            {% for customer in prev %}
+                                <tr data-id="{{ customer.code }}" class="arch {% if customer.act == 1 %}active{% endif %}">
+                                    <td>{{ customer.name }}</td>
+                                    <td>{{ customer.address }}</td>
+                                    <td>{% if customer.debt < 0 %}{{ customer.debt*-1 }}{% else %}0{% endif %}</td>
+                                    <td>{{ customer.max_debd }}</td>
+                                </tr>
+                            {% endfor %}
+                            <tr class="title">
+                                <td colspan="4">Результаты поска</td>
+                            </tr>
                         {% endif %}
                         {% for customer in customers %}
                             <tr data-id="{{ customer.code }}" class="{% if customer.act == 1 %}active{% endif %}">

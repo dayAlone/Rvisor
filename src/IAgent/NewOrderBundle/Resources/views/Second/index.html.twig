@@ -67,16 +67,18 @@
                                 <td>
 
                                     <select name="" class="type">
-
+                                        {% set factor = 1 %}
                                         {% for type in item.types %}
-                                            <option value="{{ type.id }}" {% if type.id == item.current_type %}selected{% endif %} data-code="{{ type.code }}" data-factor="{{ type.factor }}">{{ type.name }}</option>
+                                            <option value="{{ type.id }}" {% if type.id == item.current_type %}selected
+                                                {% set factor = type.factor %}
+                                            {% endif %} data-code="{{ type.code }}" data-factor="{{ type.factor }}">{{ type.name }}</option>
                                         {% endfor %}
                                     </select>
                                 </td>
                                 <td class="action"><a href="#" class="minus">–</a><input type="text" value="{{item.count}}"><a href="#" class="plus">+</a><a class="del">&#215;</a></td>
-                                <td> <span class="total">{{ item.price*item.count }}</span> {{ item.currency }}</td>
+                                <td> <span class="total">{{ item.price*item.count*factor }}</span> {{ item.currency }}</td>
                                 <td><a href="#" class="warehouse"><i class="icon-truck"></i></a></td>
-                                {% set total = total + item.price*item.count %}
+                                {% set total = total + item.price*item.count*factor %}
                                 {% set currency = item.currency %}
                             </tr>
                         {% endfor %}
@@ -289,13 +291,13 @@
                 else window.location.href = $(this).attr('href')
             })
             var order = $.cookie('order');
-            console.log(order.step2)
             function change(x, action) {
                 var order = $.cookie('order');
                 var id = x.data('id');
                 var input = x.find('td.action').find('input');
                 var total = x.find('span.total');
-                console.log(total);
+                var factor = x.find('.type option:selected').data('factor');
+                
                 var price = x.find('span.price').text();
                 var val = parseInt(input.val());
                 if(order.step2[id].substring) order.step2[id] = JSON.parse(order.step2[id]);
@@ -307,13 +309,18 @@
                     }
                     order.step2[id].count = val-1;
                     if(val!=1) { input.val(val-1);
-                        total.text(((val-1)*price).toFixed(2));                        
+                        total.text(((val-1)*factor*price).toFixed(2));                        
                     }
                 }
                 else if(action=="plus") {
                     order.step2[id].count = val+1;
                     input.val(val+1);
-                    total.text(((val+1)*price).toFixed(2));
+                    total.text(((val+1)*factor*price).toFixed(2));
+                }
+                else if(action=="change") {
+                    order.step2[id].count = val+1;
+                    input.val(val);
+                    total.text(((val)*factor*price).toFixed(2));
                 }
                 else if (confirm('Удалить из заказа?')) {
                         delete order.step2[id];
@@ -333,6 +340,7 @@
                 var val = $(this).find('option:selected').val();
                 if(order.step2[id].substring) order.step2[id] = JSON.parse(order.step2[id]);
                 order.step2[id].current_type = val;
+                change($(this).parents('tr'), 'change');
                 $.cookie('order', order, { expires: 2, path: '/' });
             })
             $('.btn.clear').click(function(){

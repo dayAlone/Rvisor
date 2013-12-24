@@ -40,7 +40,7 @@ class LoginController extends Controller
      */
     public function loginCheckAction()
     {
-
+        
     }
     /**
      * @Route ("/logout", name="logout")

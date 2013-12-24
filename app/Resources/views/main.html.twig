@@ -12,45 +12,72 @@
     <body class="{% block bodyclass %}{% endblock %}">
     <div id="header">
         <ul class="con">
-            <li class="dashboard active">
-                <a href="#"><i class="icon-user "></i> Торговый представитель</a>
+            <li class="dashboard {% if(nav['seller']['enabled']=='Y') %}active{% endif %} 
+                {% if(nav['seller']['active']!='Y') %}innactive{% endif %}">
+                <a href="/"><i class="icon-user {% if(nav['seller']['enabled']!='Y') %}active{% endif %}"></i> Торговый представитель</a>
             </li>
-            <li class="dashboard innactive">
-                <a href="#"><i class="icon-group "></i> Супервайзер</a>
+            <li class="dashboard
+                {% if(nav['merch']['enabled']=='Y') %}active{% endif %} 
+                {% if(nav['merch']['active']!='Y') %}innactive{% endif %}">
+                <a href="/manager/"><i class="icon-group"></i> Супервайзер</a>
             </li>
             <a href="/" id="logo"><img src="/static/images/logo.png"></a>
         </ul>
     </div>
     <div id="stream">
         <div class="con">
-            <a class="tile innactive" href="#" id="recent">
-                <span class="vector icon-camera"></span>
-                <span class="title"><strong>Фотоотчет</strong></span>
+            {% if(nav['merch']['enabled']!='Y') %}
+                <a class="tile innactive" href="#" id="recent">
+                    <span class="vector icon-camera"></span>
+                    <span class="title"><strong>Фотоотчет</strong></span>
 
-            </a>
-            <a class="tile innactive" href="#" id="mobile">
-                <span class="vector icon-bar-chart"></span>
-                <span class="title"><strong>План</strong></span>
+                </a>
+                <a class="tile innactive" href="#" id="mobile">
+                    <span class="vector icon-bar-chart"></span>
+                    <span class="title"><strong>План</strong></span>
 
-            </a>
+                </a>
 
-            <a class="tile innactive" id="comment">
-                <span class="vector icon-book"></span>
-                <span class="title"><strong>Отчеты</strong> </span>
+                <a class="tile innactive" id="comment">
+                    <span class="vector icon-book"></span>
+                    <span class="title"><strong>Отчеты</strong> </span>
 
-            </a>
-            <a class="tile {% if url == 'order_history' %}active{% endif %}" href="{{ url('history') }}" id="elements">
-                <span class="vector icon-file-text"></span>
-                <span class="title"><strong>Заказы</strong> </span>
+                </a>
+                <a class="tile {% if url == 'order_history' %}active{% endif %}" href="{{ url('history') }}" id="elements">
+                    <span class="vector icon-file-text"></span>
+                    <span class="title"><strong>Заказы</strong> </span>
+                </a>
+                <a class="tile {% if url == 'new_order' %}active{% endif %}" href="/" id="article">
+                    <span class="vector icon-shopping-cart"></span>
+                    <span class="title"><strong>Новый</strong> заказ</span>
 
-            </a>
-            <a class="tile {% if url == 'new_order' %}active{% endif %}" href="/" id="article">
-                <span class="vector icon-shopping-cart"></span>
-                <span class="title"><strong>Новый</strong> заказ</span>
+                </a>
+            {% else %}
+                <a class="tile innactive" href="#" id="recent">
+                    <span class="vector icon-camera"></span>
+                    <span class="title"><strong>Фотоотчет</strong></span>
 
-            </a>
+                </a>
+                <a class="tile innactive" href="#" id="mobile">
+                    <span class="vector icon-bar-chart"></span>
+                    <span class="title"><strong>План</strong></span>
 
+                </a>
 
+                <a class="tile innactive" id="comment">
+                    <span class="vector icon-book"></span>
+                    <span class="title"><strong>Отчеты</strong> </span>
+
+                </a>
+                <a class="tile innactive {% if url == 'order_history' %}active{% endif %}" href="{{ url('history') }}" id="elements">
+                    <span class="vector icon-file-text"></span>
+                    <span class="title"><strong>Заказы</strong> </span>
+                </a>
+                <a class="tile {% if url == 'manager' %}active{% endif %}" href="{{ url('manager') }}" id="elements">
+                    <span class="vector icon-file-text"></span>
+                    <span class="title"><strong>Заказы</strong> </span>
+                </a>
+            {% endif %}
 
             <div class="tile" id="hello">
                 <h2><span>Здравствуйте,<br /></span> {{ name }}</h2>

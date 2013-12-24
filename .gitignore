@@ -2,11 +2,10 @@
 app/bootstrap*
 
 # Symfony directories
-vendor/*
+
 */logs/*
 */cache/*
-web/uploads/*
-web/bundles/*
+app/cache/*
 
 # Configuration files
 app/config/parameters.ini
@@ -14,32 +13,4 @@ app/config/parameters.yml
 
 # Composer
 composer.phar
-app/cache/dev/appDevDebugProjectContainer.php
 
-app/cache/dev/appDevDebugProjectContainerCompiler.log
-
-app/cache/dev/appDevDebugProjectContainer.xml
-
-app/cache/dev/appDevDebugProjectContainer.php.meta
-
-app/cache/dev/assetic/routing.yml
-
-app/cache/prod/appProdDebugProjectContainer.php
-
-app/cache/prod/appProdDebugProjectContainer.xml
-
-app/cache/prod/appProdDebugProjectContainerCompiler.log
-
-app/cache/prod/appProdUrlGenerator.php.meta
-
-app/cache/prod/appProdUrlMatcher.php.meta
-
-app/cache/prod/classes.php.meta
-
-app/logs/prod.log
-
-app/config/parameters.yml
-
-app/cache/prod/appProdDebugProjectContainer.php.meta
-
-app/cache/prod/appProdDebugProjectContainer.php.meta

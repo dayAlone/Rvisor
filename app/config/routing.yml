@@ -1,3 +1,7 @@
+manager:
+    resource: "@ManagerBundle/Controller"
+    type: annotation
+
 new_order:
     resource: "@NewOrderBundle/Controller"
     type: annotation

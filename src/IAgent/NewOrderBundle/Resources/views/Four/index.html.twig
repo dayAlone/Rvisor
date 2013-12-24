@@ -95,15 +95,17 @@
                     <tbody>
                         {% set total = 0 %}
                         {% set currency = 0 %}
+                        {% set factor = 1 %}
                         {% for item in items %}
                             <tr data-id = "{{ item.id }}">
                                 <td>{{ item.name }}</td>
                                 <td>{{ item.price }} {{ item.currency }}</td>
                                 <td>{{ item.type }}</td>
-                                <td>{{item.count}}</td>
-                                <td>{{ item.price*item.count}} {{ item.currency }}</td>
+                                {% set factor = item.factor %}
+                                <td>{{ item.count }}</td>
+                                <td>{{ item.price*item.count*factor}} {{ item.currency }}</td>
                             </tr>
-                            {% set total = total + item.price*item.count %}
+                            {% set total = total + item.price*item.count*factor %}
                             {% set currency = item.currency %}
                         {% endfor %}
                     </tbody>

@@ -25,6 +25,27 @@ class appProdUrlMatcher extends Symfony\Bundle\FrameworkBundle\Routing\Redirecta
         $allow = array();
         $pathinfo = rawurldecode($pathinfo);
 
+        if (0 === strpos($pathinfo, '/manager')) {
+            // manager
+            if (rtrim($pathinfo, '/') === '/manager') {
+                if (substr($pathinfo, -1) !== '/') {
+                    return $this->redirect($pathinfo.'/', 'manager');
+                }
+
+                return array (  'month' => NULL,  '_controller' => 'IAgent\\ManagerBundle\\Controller\\DefaultController::indexAction',  '_route' => 'manager',);
+            }
+
+            // iagent_manager_default_index
+            if (preg_match('#^/manager/(?P<month>[^/]++)/?$#s', $pathinfo, $matches)) {
+                if (substr($pathinfo, -1) !== '/') {
+                    return $this->redirect($pathinfo.'/', 'iagent_manager_default_index');
+                }
+
+                return $this->mergeDefaults(array_replace($matches, array('_route' => 'iagent_manager_default_index')), array (  'month' => NULL,  '_controller' => 'IAgent\\ManagerBundle\\Controller\\DefaultController::indexAction',));
+            }
+
+        }
+
         // index
         if (rtrim($pathinfo, '/') === '') {
             if (substr($pathinfo, -1) !== '/') {

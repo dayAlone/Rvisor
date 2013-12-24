@@ -248,7 +248,7 @@ class ClassCollectionLoader
      *
      * @throws \InvalidArgumentException When a class can't be loaded
      */
-    private static function getOrderedClasses(array $classes=null)
+    private static function getOrderedClasses(array $classes)
     {
         $map = array();
         self::$seen = array();

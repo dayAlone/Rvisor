@@ -15,6 +15,18 @@ use IAgent\NewOrderBundle\Entity\OrderItem;
 
 class DefaultController extends Controller
 {
+    public function get_nav() {
+        $user = $this->get('security.context')->getToken()->getUser();
+        $p = $this->getDoctrine()->getRepository('NewOrderBundle:Agent')->findByParentUserFk($user->getCode());
+        $nav = array();
+        $nav['seller'] = array('active'=>'Y', 'enabled'=>'Y');
+        $nav['merch'] = array('active'=>'N', 'enabled'=>'N');
+        if($user->getParentUserFk()==NULL && count($p)>0) {
+            $nav['merch']['active']='Y';
+        }
+        return $nav;
+    }
+
     public function tr($string)
     {
         $converter = array('а' => 'a',   'б' => 'b',   'в' => 'v','г' => 'g',   'д' => 'd',   'е' => 'e','ё' => 'e',   'ж' => 'zh',  'з' => 'z','и' => 'i',   'й' => 'y',   'к' => 'k','л' => 'l',   'м' => 'm',   'н' => 'n','о' => 'o',   'п' => 'p',   'р' => 'r','с' => 's',   'т' => 't',   'у' => 'u','ф' => 'f',   'х' => 'h',   'ц' => 'c','ч' => 'ch',  'ш' => 'sh',  'щ' => 'sch','ь' => '\'',  'ы' => 'y',   'ъ' => '\'','э' => 'e',   'ю' => 'yu',  'я' => 'ya','А' => 'A',   'Б' => 'B',   'В' => 'V','Г' => 'G',   'Д' => 'D',   'Е' => 'E','Ё' => 'E',   'Ж' => 'Zh',  'З' => 'Z','И' => 'I',   'Й' => 'Y',   'К' => 'K','Л' => 'L',   'М' => 'M',   'Н' => 'N','О' => 'O',   'П' => 'P',   'Р' => 'R','С' => 'S',   'Т' => 'T',   'У' => 'U','Ф' => 'F',   'Х' => 'H',   'Ц' => 'C','Ч' => 'Ch',  'Ш' => 'Sh',  'Щ' => 'Sch','Ь' => '\'',  'Ы' => 'Y',   'Ъ' => '\'','Э' => 'E',   'Ю' => 'Yu',  'Я' => 'Ya',);
@@ -130,7 +142,7 @@ class DefaultController extends Controller
 
         
         
-        return array('customers'=>$customers, 'name'=>$user->getName(), 'query' => $query, 'url' => 'new_order', 'prev'=>$prev);
+        return array('customers'=>$customers, 'name'=>$user->getName(), 'query' => $query, 'url' => 'new_order', 'prev'=>$prev, 'nav' => $this->get_nav());
     }
     /**
      * @Route ("/orders/{query}/")
@@ -297,7 +309,7 @@ class DefaultController extends Controller
             array_walk($cats[$f->getCode()]['child'], array($this,'check'));
             }
             uasort($cats[$f->getCode()]['child'], array($this,'sort'));
-            return $this->render('NewOrderBundle:Second:index.html.twig',array('items'=>$items,'name'=>$user->getName(), 'cats'=> $cats, 'url' => 'new_order'));
+            return $this->render('NewOrderBundle:Second:index.html.twig',array('items'=>$items,'name'=>$user->getName(), 'cats'=> $cats, 'url' => 'new_order', 'nav' => $this->get_nav()));
         }
         else {
             
@@ -365,7 +377,7 @@ class DefaultController extends Controller
         if(!is_object($order)||$order->step1==""||!is_object($order->step2)) {
             return new RedirectResponse('/');
         }
-        return array('name'=>$user->getName(),'info'=>$order->step3, 'url' => 'new_order');
+        return array('name'=>$user->getName(),'info'=>$order->step3, 'url' => 'new_order', 'nav' => $this->get_nav());
     }
     /**
      * @Route ("/step4/", name="step4")
@@ -390,6 +402,7 @@ class DefaultController extends Controller
                         'price' => $item->price,
                         'currency' => "руб.",
                         'type' => $types->$current_type->name,
+                        'factor' => $types->$current_type->factor,
                         'count' => $item->count
                     );
                 }
@@ -402,7 +415,7 @@ class DefaultController extends Controller
             'debt' => $product[0]->getCurrentDebt(),
         );
         $user = $this->get('security.context')->getToken()->getUser();
-        return array('name'=>$user->getName(),'items'=>$items, 'info'=>$order->step3, 'company'=>$item, 'url'=>'new_order');
+        return array('name'=>$user->getName(),'items'=>$items, 'info'=>$order->step3, 'company'=>$item, 'url'=>'new_order', 'nav' => $this->get_nav());
     }
 
     /**
@@ -489,7 +502,7 @@ class DefaultController extends Controller
             return (int)$b['id'] - (int)$a['id'];
         });
         
-        return array('name'=>$user->getName(), 'list'=>$list, 'url' => 'order_history');
+        return array('name'=>$user->getName(), 'list'=>$list, 'url' => 'order_history', 'nav' => $this->get_nav());
     }
 
     /**
@@ -525,6 +538,6 @@ class DefaultController extends Controller
                 'count' => $item->getRequestedQuantity()
             );
         }
-        return array('name'=>$user->getName(), 'info'=>$info, 'items'=>$items, 'company'=>$company, 'url' => 'order_history');
+        return array('name'=>$user->getName(), 'info'=>$info, 'items'=>$items, 'company'=>$company, 'url' => 'order_history', 'nav' => $this->get_nav());
     }
 }

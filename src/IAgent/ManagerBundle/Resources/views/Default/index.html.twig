@@ -1,0 +1,111 @@
+{% extends '::main.html.twig' %}
+
+{% block title %} {{ parent() }} | Список заказов{% endblock %}
+
+{% block bodyclass %}dashboard{% endblock %}
+
+{% block body %}
+<div id="dashboard">
+    <div class="scroll con">
+		<div class="container" id="title">
+			<div class="col_8">
+				<br/>
+			</div>
+            <div class="col_4 right">
+                <div class="content">
+                	<label for="month">Выбрать месяц</label>
+                	<select id="month">
+                		{% for item in months %}
+                		    <option {% if(item.time==current_month) %}selected{% endif %} value="{{ item.time }}">{{ item.name }}</option>
+                		{% endfor %}
+                	</select>
+                </div>
+            </div>
+        </div>
+        <div class="container first-step" id="content">
+            <div class="col_3 users">
+            	<h2>Выберите сотрудника</h2>
+            	<ul id="stuff">
+            		{% for key, item in stuff %}
+						
+                		<li>
+                			<input checked="checked" type="checkbox" name="stuff-{{ key }}" id="stuff-{{ key }}" value="{{ item.code }}">
+                			<label for="stuff-{{ key }}">{{ item.name }}</label>
+                		</li>
+                	{% endfor %}
+            	</ul>
+            </div>
+            <div class="col_9">
+            	<br />
+            	<br />
+            	<br />
+            	<br />
+            </div>
+        </div>
+    </div>
+</div>
+<style type="text/css">
+	#stuff {
+		list-style: none;
+		padding: 0;
+		margin-left: 10px;
+	}
+	#stuff li {
+		float: left;
+		width: 100%;
+		margin-bottom: 13px;
+	}
+	#stuff label {
+		font-size: 15px;
+		line-height: 22px;
+		float: left;
+	}
+	.icheckbox {
+		
+		float: left;
+	}
+	#content .col_9{
+		box-shadow: -1px 0px 0px #9eabab,-2px 0px 0px #fff;
+	}
+	#month {
+		float: right;
+		width: 160px;
+		height: 24px;
+		background: url(/static/images/select.png) top left no-repeat;
+		border-radius: 0px;
+		border: 0px;
+		-moz-appearance: none;
+		-webkit-appearance: none;
+		appearance: none;
+		padding-left: 10px;
+	}
+	#month:focus {
+		outline: none;
+	}
+	#title label {
+		float: left;
+		font-size: 14px;
+		line-height: 26px;
+		color: #000;
+		width: 47%;
+		text-align: right;
+	}
+</style>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="/static/scripts/app.js"></script>
+	<script>
+	$(function(){
+	  $('#month').change(function(){
+	  	window.location.href = '/manager/'+$(this).val()+'/';
+	  })
+	  $('#stuff input').iCheck({
+        cursor: true
+      })/*.on('ifToggled',function(){
+        $(this).parents('.half').find('label').toggleClass('active');
+      });*/
+	})
+	</script>
+{% endblock %}
