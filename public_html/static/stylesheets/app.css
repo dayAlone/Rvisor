@@ -2063,14 +2063,24 @@ div.tabs > div.tab.padding .carton .content, .section.padding > .carton .content
 	text-shadow: white 0px 1px 0px;
 }
 #notifications.margin {
-	top: 80px;
-	
+	bottom: 200px;
+	top: auto;
+	z-index: 123123123;
 }
 body.welcome #notifications {
 	max-height: 185px;
 }
 .notification {
 	position: relative;
+
+}
+#fade {
+	background: rgba(0,0,0,.7);
+	position: fixed;
+	display: none;
+	z-index: 25;
+	height: 100%;
+	width: 100%;
 }
 .notification.more {
 	border-bottom: 1px solid #c1c1c1;

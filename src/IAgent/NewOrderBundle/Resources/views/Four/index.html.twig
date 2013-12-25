@@ -126,6 +126,7 @@
 
     </div>
 </div>
+<div id="fade"></div>
 <div id="notifications" class="margin"></div>
 {% endblock %}
 
@@ -378,6 +379,7 @@
                                 border: false,
                             }
                         );
+                        $('#fade').fadeIn();
                         setTimeout(function(){
                             window.location.href = '/';
                         },3000)
