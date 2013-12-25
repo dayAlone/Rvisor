@@ -303,13 +303,16 @@
                 if(order.step2[id].substring) order.step2[id] = JSON.parse(order.step2[id]);
                 
                 if(action=="minus"){
-                    if(val==1&&confirm('Удалить из заказа?')) {
+                    if(val==1 && confirm('Удалить из заказа?')) {
                         delete order.step2[id];
+                        console.log('delete');
                         x.remove();
                     }
-                    order.step2[id].count = val-1;
-                    if(val!=1) { input.val(val-1);
-                        total.text(((val-1)*factor*price).toFixed(2));                        
+                    else {
+                        order.step2[id].count = val-1;
+                        if(val!=1) { input.val(val-1);
+                            total.text(((val-1)*factor*price).toFixed(2));                        
+                        }   
                     }
                 }
                 else if(action=="plus") {
@@ -327,6 +330,7 @@
                         x.remove();
                 }
                 check();
+                console.log(order);
                 $.cookie('order', order, { expires: 2, path: '/' });
             }
 
