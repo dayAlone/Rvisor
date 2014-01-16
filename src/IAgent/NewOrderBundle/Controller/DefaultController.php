@@ -62,11 +62,9 @@ class DefaultController extends Controller
         }
         $count = $session->get("customersCount");
         */
+        $repository = $this->getDoctrine()->getRepository('NewOrderBundle:AgentCustomer')->findByAgentCode($user->getCode());
+
         
-        if(!$query) $repository = $this->getDoctrine()->getRepository('NewOrderBundle:Customer')->findAllOrderedByName(30);
-        else {
-            $repository = $this->getDoctrine()->getRepository('NewOrderBundle:Customer')->findAllOrderedLikeName($query,30);
-        }
         $user = $this->get('security.context')->getToken()->getUser();
         $orders = $this->getDoctrine()->getRepository('NewOrderBundle:AgentOrder')->findByAgentCode($user->getCode(),array(),15);
         $prev = array();
@@ -101,7 +99,8 @@ class DefaultController extends Controller
             });
         }
         foreach ($repository as $customer) {
-            if($customer->getCode() !=$order->step1) {
+            $customer=$customer->getCustomerCode();
+            if($customer->getCode() != $order->step1) {
                 $id =$this->tr($customer->getCode());
                 if(!array_key_exists($id,$prev)) {
                     if($order->step1 == $customer->getCode()) {
@@ -121,6 +120,7 @@ class DefaultController extends Controller
                 }
             }
         }
+        
         if($order->step1!=""&&!$global_act) {
             $product = $this->getDoctrine()->getRepository('NewOrderBundle:Customer')->findOneByCode($order->step1);
             if(is_object($product)) {
@@ -142,7 +142,16 @@ class DefaultController extends Controller
 
         
         
+        usort($customers, array($this,"cmp"));
+
+        
         return array('customers'=>$customers, 'name'=>$user->getName(), 'query' => $query, 'url' => 'new_order', 'prev'=>$prev, 'nav' => $this->get_nav());
+    }
+    function cmp($a, $b)
+    {
+        
+        var_dump();
+        return strcmp(mb_substr($a["name"],0,1,'UTF-8'), mb_substr($b["name"],0,1,'UTF-8'));
     }
     /**
      * @Route ("/orders/{query}/")

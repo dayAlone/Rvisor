@@ -16,3 +16,5 @@ composer.phar
 
 
 /public_html/log.log
+
+app/logs/dev.log

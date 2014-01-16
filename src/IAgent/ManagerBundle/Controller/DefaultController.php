@@ -22,6 +22,7 @@ class DefaultController extends Controller
        
         return $nav;
     }
+
     public function getPrice($product, $agent, $customer) {
         
         $tmp = $this->getDoctrine()->getRepository('NewOrderBundle:Price')->findOneBy(array('productCode'=>$product->getCode(),'agentCode'=>$agent->getCode(),'customerCode'=>$customer->getCode()));
@@ -31,6 +32,7 @@ class DefaultController extends Controller
 
         return $price;
     }
+
     public function getOrder($order) {
     	$o_r = $this->getDoctrine()->getRepository('NewOrderBundle:AgentOrder')->findOneById($order);
     	$o_i = $this->getDoctrine()->getRepository('NewOrderBundle:OrderItem')->findByOrder($o_r->getID());
@@ -57,6 +59,7 @@ class DefaultController extends Controller
 		}
 		return array('items'=>$items, 'info'=>$info);
     }
+
     public function get_month($m) {
     	switch ($m){
 			case 1: $m  ='Январь'; break;
@@ -74,6 +77,7 @@ class DefaultController extends Controller
 		}
 		return $m;
     }
+    
 	/**
      * @Route ("/manager/", name="manager")
      * @Route ("/manager/{month}/")
